@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 96e67244320da0e4d8abe975803c1c29
+  - enabled: 1
+    path: Assets/Scenes/World Map.unity
+    guid: 93a4eb7981edd814e871d9a3cafd42c3
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 837ea016b11a4d245bdca179da9c2ddd
+  - enabled: 1
+    path: Assets/Scenes/Abandoned Caves.unity
+    guid: 81a9fa08e8a26054bb3166431f10bd0a
+  - enabled: 1
+    path: Assets/Scenes/The Dead Swamps.unity
+    guid: 63edbdb2d47a605419b5732f9d1e5849
+  - enabled: 1
+    path: Assets/Scenes/The Castle of Despair.unity
+    guid: a9c038bd58a5dba4480083aac68d6736
+  m_configObjects: {}
