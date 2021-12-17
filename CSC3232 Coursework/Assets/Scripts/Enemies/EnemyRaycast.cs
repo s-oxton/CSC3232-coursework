@@ -8,8 +8,6 @@ public class EnemyRaycast : MonoBehaviour
     [SerializeField]
     private LayerMask playerLayer;
     [SerializeField]
-    private LayerMask groundLayer;
-    [SerializeField]
     private float visionDistance;
     [SerializeField]
     private float closeDistance;

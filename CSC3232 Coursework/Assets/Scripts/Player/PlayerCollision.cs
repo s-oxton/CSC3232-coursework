@@ -3,6 +3,8 @@ using UnityEngine;
 public class PlayerCollision : MonoBehaviour
 {
 
+    
+
     [SerializeField]
     private PlayerCombat playerCombat;
     [SerializeField]
@@ -11,6 +13,10 @@ public class PlayerCollision : MonoBehaviour
     private CircleCollider2D groundCollider;
     [SerializeField]
     private LayerMask layerMask;
+
+    [SerializeField]
+    private float immunityTime;
+    private float timer;
 
     private bool grounded;
 
@@ -45,18 +51,24 @@ public class PlayerCollision : MonoBehaviour
             grounded = false;
         }
 
+        if (timer > -1)
+        {
+            timer -= Time.deltaTime;
+        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if u run into an enemy u take damage
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy" && timer < 0)
         {
             playerCombat.TakeDamage(1);
             //get the direction between the objects
             Vector3 direction = (this.transform.position - collision.transform.position).normalized;
             //add a small force to the player
             playerMovement.DamageBump(direction);
+            timer = immunityTime;
         }
     }
 

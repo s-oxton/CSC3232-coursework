@@ -12,4 +12,18 @@ public class VolumeControl : MonoBehaviour
         audioSource.volume = sliderLevel;
     }
 
+    //pauses the music when the user pauses, and vice versa
+    public void ChangeMusicPauseState(bool playMusic)
+    {
+        if (playMusic)
+        {
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.Pause();
+        }
+
+    }
+
 }

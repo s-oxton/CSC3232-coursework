@@ -14,7 +14,11 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField]
     private PlayerAnimation playerAnimation;
     [SerializeField]
+    private PlayerSounds playerSounds;
+    [SerializeField]
     private CameraShake cameraShake;
+    [SerializeField]
+    private GameObject bloodSplatter;
 
     [Header("Combat Details")]
 
@@ -52,12 +56,16 @@ public class PlayerCombat : MonoBehaviour
 
     public void SetAttacking(bool attacking)
     {
-        isAttacking = true;
+        isAttacking = attacking;
     }
 
     public int GetCurrentHealth()
     {
         return currentHealth;
+
+    }public int GetMaxHealth()
+    {
+        return maxHealth;
     }
 
     public bool GetIsHurt()
@@ -115,10 +123,12 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Taken " + damageAmount + " Damage!");
         if (currentHealth > 0)
         {
+            //play hurt sound
+            playerSounds.PlayHurt();
             //reduce the player's health
             currentHealth -= damageAmount;
             //update the ui
-            playerUI.UpdateHealthPips(currentHealth);
+            playerUI.LoseHealth(currentHealth);
             //if health is less than/equal to 0, they are dead
             if (currentHealth <= 0)
             {
@@ -135,6 +145,8 @@ public class PlayerCombat : MonoBehaviour
                 //shake the screen
                 StartCoroutine(cameraShake.ShakeCamera(damageAmount));
             }
+            //creates a blood splatter on the player.
+            Instantiate(bloodSplatter, transform.position, Quaternion.identity);
         }
 
 
@@ -152,7 +164,14 @@ public class PlayerCombat : MonoBehaviour
         //if there is an enemy in range
         if (enemy != null)
         {
-            enemy.GetComponent<EnemyCombat>().TakeDamage(damage);
+            //if you're about to kill the enemy and not max hp
+            if (currentHealth < maxHealth && enemy.GetComponent<EnemyStatTracker>().GetCurrentHealth() <= damage)
+            {
+                //heal for one
+                playerUI.GainHealth(currentHealth, 1);
+                currentHealth++;
+            }
+            enemy.GetComponent<EnemyStatTracker>().TakeDamage(damage);
             //shake the screen
             StartCoroutine(cameraShake.ShakeCamera(damage));
         }

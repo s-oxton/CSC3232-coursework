@@ -15,6 +15,10 @@ public class PlayerAnimation : MonoBehaviour
     private PlayerCombat playerCombat;
     [SerializeField]
     private PlayerCollision playerCollision;
+    [SerializeField]
+    private GameObject dustParticle;
+    [SerializeField]
+    private float dustYOffset;
 
     private float xVelocity;
 
@@ -74,7 +78,7 @@ public class PlayerAnimation : MonoBehaviour
     //change orientation of player depending on their direction
     private void PlayerFlip(float xVelocity)
     {
-        if (Mathf.Abs(xVelocity) > 0.5f)
+        if (playerCombat.GetCurrentHealth() > 0 && Mathf.Abs(xVelocity) > 0.5f)
         {
             Vector2 tempVector = transform.localScale;
 
@@ -91,6 +95,11 @@ public class PlayerAnimation : MonoBehaviour
 
     }
 
-
+    public void CreateDust()
+    {
+        Vector3 dustPosition = new Vector3(transform.position.x, transform.position.y - dustYOffset, transform.position.z);
+        //creates a blood splatter
+        Instantiate(dustParticle, dustPosition, Quaternion.identity);
+    }
 
 }

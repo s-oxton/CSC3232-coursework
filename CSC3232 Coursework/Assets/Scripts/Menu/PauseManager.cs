@@ -5,6 +5,10 @@ public class PauseManager : MonoBehaviour
 
     [SerializeField]
     private GameObject pauseMenu;
+    [SerializeField]
+    private VolumeControl musicController;
+    [SerializeField]
+    private UISoundController uISoundController;
     private bool isPaused;
 
     // Start is called before the first frame update
@@ -23,13 +27,14 @@ public class PauseManager : MonoBehaviour
             {
                 ChangePauseState(1);
                 pauseMenu.SetActive(false);
-            } else
+            }
+            else
             {
                 ChangePauseState(0);
                 pauseMenu.SetActive(true);
             }
-            
-            
+
+
         }
     }
 
@@ -39,6 +44,17 @@ public class PauseManager : MonoBehaviour
         isPaused = !isPaused;
         //set the new timescale
         Time.timeScale = timeScale;
+        //play sounds depending on if the game is paused or not.
+        if (timeScale == 1)
+        {
+            musicController.ChangeMusicPauseState(true);
+            uISoundController.PlayPlaySound();
+        }
+        else
+        {
+            musicController.ChangeMusicPauseState(false);
+            uISoundController.PlayPauseSound();
+        }
     }
 
 }

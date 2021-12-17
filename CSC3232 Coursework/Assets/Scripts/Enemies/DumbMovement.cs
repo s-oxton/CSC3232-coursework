@@ -4,7 +4,7 @@ public class DumbMovement : MonoBehaviour
 {
 
     [SerializeField]
-    private EnemyCombat enemyCombat;
+    private EnemyStatTracker statTracker;
     [SerializeField]
     private EnemyRaycast enemyRaycast;
 
@@ -29,7 +29,6 @@ public class DumbMovement : MonoBehaviour
 
     private bool playerVisible;
     private bool playerAttackable;
-    private bool isAttacking;
 
     private float actionTime;
     private float timer;
@@ -75,7 +74,7 @@ public class DumbMovement : MonoBehaviour
 
         if (playerVisible)
         {
-            if (enemyCombat.GetAttacking() || playerAttackable)
+            if (statTracker.GetAttacking() || playerAttackable)
             {
                 isMoving = false;
                 timer = 1.5f;
@@ -85,7 +84,7 @@ public class DumbMovement : MonoBehaviour
                 isMoving = true;
             }
         }
-        else if (enemyCombat.GetCurrentHealth() > 0 && !enemyCombat.GetAttacking())
+        else if (statTracker.GetCurrentHealth() > 0 && !statTracker.GetAttacking())
         {
             //idle movement stuff
 
@@ -116,7 +115,7 @@ public class DumbMovement : MonoBehaviour
     {
 
         //if the enemy is dead
-        if (enemyCombat.GetCurrentHealth() <= 0)
+        if (statTracker.GetCurrentHealth() <= 0)
         {
             //stop it from moving
             rb.velocity = Vector2.right * 0;
@@ -130,7 +129,7 @@ public class DumbMovement : MonoBehaviour
         //if the player is visible
         if (playerVisible)
         {
-            if (enemyCombat.GetAttacking() || playerAttackable)
+            if (statTracker.GetAttacking() || playerAttackable)
             {
                 //stop moving
                 rb.velocity = Vector2.right * 0;
@@ -144,7 +143,7 @@ public class DumbMovement : MonoBehaviour
         else
         {
             //idle movement stuff
-            if (enemyCombat.GetCurrentHealth() > 0 && isMoving && !enemyCombat.GetIsHit() && !enemyCombat.GetAttacking())
+            if (statTracker.GetCurrentHealth() > 0 && isMoving && !statTracker.GetIsHit() && !statTracker.GetAttacking())
             {
                 //move
                 MoveEnemy(idleSpeed, idleAcceleration);
@@ -178,6 +177,12 @@ public class DumbMovement : MonoBehaviour
         return randomNumber;
     }
 
-
+    //gets the distance to the player
+    public float GetDistanceToPlayer()
+    {
+        float distance = 0;
+        distance = Vector2.Distance(rb.position, GameObject.Find("Player").GetComponent<PlayerMovement>().GetPosition());
+        return distance;
+    }
 
 }

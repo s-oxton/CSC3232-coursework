@@ -155,3 +155,5 @@ MonoBehaviour:
   constantYOffset: 2.15
   yOffsetMultiple: 0.22
   zOffset: -10
+  xOffset: 10
+  yOffset: 10

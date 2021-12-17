@@ -6,6 +6,8 @@ public class MushroomAnimator : MonoBehaviour
     [SerializeField]
     private DumbMovement dumbMovement;
     [SerializeField]
+    private EnemyStatTracker statTracker;
+    [SerializeField]
     private EnemyCombat enemyCombat;
     [SerializeField]
     private Animator animator;
@@ -20,13 +22,13 @@ public class MushroomAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyCombat.GetCurrentHealth() <= 0)
+        if (statTracker.GetCurrentHealth() <= 0)
         {
             animator.SetBool("IsDead", true);
         }
         else
         {
-            if (enemyCombat.GetIsHit())
+            if (statTracker.GetIsHit())
             {
                 animator.SetBool("IsHit", true);
             }
@@ -36,7 +38,7 @@ public class MushroomAnimator : MonoBehaviour
             }
         }
 
-        animator.SetBool("Attacking", enemyCombat.GetAttacking());
+        animator.SetBool("Attacking", statTracker.GetAttacking());
 
         if (mushroomOrientation != dumbMovement.GetDirection())
         {
@@ -76,26 +78,12 @@ public class MushroomAnimator : MonoBehaviour
     //ends the current attack
     private void EndAttack()
     {
-        enemyCombat.SetAttacking(false);
+        statTracker.SetAttacking(false);
     }
 
     private void DealDamage()
     {
         enemyCombat.Attack();
-    }
-
-    //hittable is false when the combat animation is active
-    private void UpdateHittable(int hittable)
-    {
-        //if hittable is 0 then the monster can't be hit
-        if (hittable == 0)
-        {
-            enemyCombat.SetHittable(false);
-        } else
-        {
-            enemyCombat.SetHittable(true);
-        }
-        
     }
 
     private void Attack()

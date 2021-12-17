@@ -50,9 +50,6 @@ TagManager:
   - name: Background
     uniqueID: 432741027
     locked: 0
-  - name: Enemies
-    uniqueID: 1154781463
-    locked: 0
   - name: Player
     uniqueID: 4254735397
     locked: 0
@@ -62,6 +59,12 @@ TagManager:
   - name: Water
     uniqueID: 4144727561
     locked: 0
+  - name: Enemies
+    uniqueID: 1154781463
+    locked: 0
   - name: Ghost
     uniqueID: 1249797503
+    locked: 0
+  - name: Particles
+    uniqueID: 4040549447
     locked: 0

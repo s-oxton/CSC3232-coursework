@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    #region Variables
 
     [Header("References")]
     [Space(10)]
@@ -10,6 +11,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private PlayerCombat playerCombat;
     private Rigidbody2D rb;
+    [SerializeField]
+    private PlayerSounds playerSounds;
+    [SerializeField]
+    private PlayerAnimation playerAnimation;
 
     [Header("Movement")]
     [Space(10)]
@@ -25,10 +30,12 @@ public class PlayerMovement : MonoBehaviour
     private float crouchFrictionModifier;
     [SerializeField]
     [Range(0, 5)]
+    private bool lastFrameFriction;
     private bool isFriction;
     private bool canMove;
     private float crouching;
     private bool isCrouching;
+    private bool lastFrameGrounded;
     private bool grounded;
     private float xInput;
     private float xVelocity;
@@ -58,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
     private bool jumping;
 
     private float weight;
+
+    #endregion
 
     #region Getters/Setters
 
@@ -101,6 +110,11 @@ public class PlayerMovement : MonoBehaviour
         rb.mass = weight;
     }
 
+    public Vector2 GetPosition()
+    {
+        return rb.position;
+    }
+
     #endregion
 
     private void Start()
@@ -108,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         weight = rb.mass;
+        grounded = false;
+        isFriction = false;
     }
 
     // Update for physics
@@ -135,7 +151,6 @@ public class PlayerMovement : MonoBehaviour
         //determine the amount of friction on the player, depending on their speed
         friction = Mathf.Min(Mathf.Abs(xVelocity), frictionAmount);
         friction *= Mathf.Sign(xVelocity);
-        isFriction = false;
 
         //set movement force, depending on how close the player is to their top speed
         //(the closer to top speed, the lower the force)
@@ -147,6 +162,10 @@ public class PlayerMovement : MonoBehaviour
         {
             airControl = airborneControl;
         }
+
+        lastFrameFriction = isFriction;
+
+        isFriction = false;
 
         //if player not entering in x movement command, or if they are moving other direction to input, apply friction
         if (!canMove || (Mathf.Abs(xInput) < 0.01f) || (grounded && Mathf.Abs(xInput) > 0.01f && targetSpeed * xVelocity < 0 && Mathf.Abs(xVelocity) > 0.01f))
@@ -174,6 +193,11 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector2.right * movement * airControl);
         }
 
+        if (lastFrameFriction != isFriction && !lastFrameFriction)
+        {
+            playerSounds.PlaySkid();
+        }
+
     }
 
     //if the player hits into an enemy, this is called
@@ -185,6 +209,7 @@ public class PlayerMovement : MonoBehaviour
     //jump
     private void Jump()
     {
+        playerSounds.PlayJump();
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
@@ -207,8 +232,17 @@ public class PlayerMovement : MonoBehaviour
             playerCombat.TakeDamage(5);
         }
 
+        lastFrameGrounded = grounded;
+
         //check if the player is grounded
         grounded = collision.GetGrounded();
+
+        //if player has just landed, play sound and make effect
+        if (lastFrameGrounded != grounded && !lastFrameGrounded)
+        {
+            playerSounds.PlayLandJump();
+            playerAnimation.CreateDust();
+        }
 
         //a timer that checks how long a player has been not grounded for 
         if (grounded)
@@ -218,6 +252,8 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             coyoteTimer -= Time.deltaTime;
+            //to fix attacking bug
+            playerCombat.SetAttacking(false);
         }
 
         // when the player enters in the jump, set the jump buffer to its max

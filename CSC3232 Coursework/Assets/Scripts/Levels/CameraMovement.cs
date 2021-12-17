@@ -17,7 +17,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     private Vector2 maxBounds;
     [Space(10)]
-    
+
     [Header("X Axis")]
     [SerializeField]
     [Range(0, 10)]
@@ -54,6 +54,19 @@ public class CameraMovement : MonoBehaviour
     private float zOffset;
     #endregion
 
+    private bool isStatic;
+
+    public void UpdateTargetTransform(Transform newTransform, bool tempIsStatic)
+    {
+        playerTransform = newTransform;
+        isStatic = tempIsStatic;
+    }
+
+    private void Start()
+    {
+        isStatic = false;
+    }
+
     // Update is called once per frame
     void LateUpdate()
     {
@@ -65,9 +78,20 @@ public class CameraMovement : MonoBehaviour
         //get position of player
         playerPosition = GetPlayerPositionVector();
 
-        //offsets of the camera
-        float xOffset = CalculateXOffset(playerPosition);
-        float yOffset = CalculateYOffset(playerPosition);
+        float xOffset = 0;
+        float yOffset = 0;
+
+        if (!isStatic)
+        {
+            //offsets of the camera
+            xOffset = CalculateXOffset(playerPosition);
+            yOffset = CalculateYOffset(playerPosition);
+        } else
+        {
+            //temp settings for when the cameea is being locked to the boss room
+            xOffset = playerTransform.position.x;
+            yOffset = -2.3f;
+        }
 
         //smoothing amount of the camera on the x axis
         float xSmoothing = CalculateXSmoothing(playerPosition, xOffset);
@@ -80,6 +104,7 @@ public class CameraMovement : MonoBehaviour
 
         //set the new camera position
         transform.position = boundedPosition;
+
     }
 
     private float CalculateXSmoothing(Vector3 playerPosition, float xOffset)

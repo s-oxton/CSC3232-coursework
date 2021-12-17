@@ -5,9 +5,9 @@ public class EnemyCombat : MonoBehaviour
 
     [SerializeField]
     private EnemyRaycast raycast;
-
     [SerializeField]
-    private int maxHealth;
+    private EnemyStatTracker statTracker;
+    
     [SerializeField]
     private float attackGap;
     private float attackTimer;
@@ -24,50 +24,8 @@ public class EnemyCombat : MonoBehaviour
     [SerializeField]
     private int damage;
 
-    private int currentHealth;
     private bool playerHittable;
-    private bool hittable;
-    private bool isHit;
-    private bool isAttacking;
-
-    #region getters/setters
-    public int GetCurrentHealth()
-    {
-        return currentHealth;
-    }
-
-    public void EndHit()
-    {
-        isHit = false;
-    }
-
-    public bool GetIsHit()
-    {
-        return isHit;
-    }
-
-    public void SetHittable(bool tempHittable)
-    {
-        hittable = tempHittable;
-    }
-
-    public bool GetAttacking()
-    {
-        return isAttacking;
-    }
-
-    public void SetAttacking(bool attacking)
-    {
-        isAttacking = attacking;
-    }
-    #endregion
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        currentHealth = maxHealth;
-        hittable = true;
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -80,7 +38,7 @@ public class EnemyCombat : MonoBehaviour
             //if there has been a large enough gap between attacks, or if the player has been outside of attack range for sufficiently long, attack
             if (attackTimer <= 0 || resetTimer <= 0)
             {
-                isAttacking = true;
+                statTracker.SetAttacking(true);
                 attackTimer = attackGap;
             }
             //else reduce the attack timer
@@ -97,21 +55,6 @@ public class EnemyCombat : MonoBehaviour
             resetTimer -= Time.deltaTime;
         }
 
-
-    }
-
-    //when the monster takes damage
-    public void TakeDamage(int damageAmount)
-    {
-        //if the monster is hittable (not doing an uncancelable animation)
-        if (hittable)
-        {
-            //stop the attack animation
-            isHit = true;
-            isAttacking = false;
-        }
-        //always reduce the health of the monster
-        currentHealth -= damageAmount;
 
     }
 

@@ -9,7 +9,9 @@ public class DeathManager : MonoBehaviour
     //when the player dies
     public void PlayerDeath()
     {
+
         deadMenu.SetActive(true);
+
     }
 
 }
